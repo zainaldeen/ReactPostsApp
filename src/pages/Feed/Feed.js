@@ -17,6 +17,7 @@ class Feed extends Component {
     editPost: null,
     status: '',
     postPage: 1,
+    perPage: 2,
     postsLoading: true,
     editLoading: false
   };
@@ -42,6 +43,7 @@ class Feed extends Component {
       this.setState({ postsLoading: true, posts: [] });
     }
     let page = this.state.postPage;
+    let perPage = this.state.perPage;
     if (direction === 'next') {
       page++;
       this.setState({ postPage: page });
@@ -50,7 +52,7 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('http://localhost:8080/feeds/posts')
+    fetch('http://localhost:8080/feeds/posts?page=' + page + '&perPage=' + perPage)
       .then(res => {
         if (res.status !== 200) {
           throw new Error('Failed to fetch posts.');
