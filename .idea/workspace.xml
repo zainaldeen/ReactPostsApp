@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="c6940ba9-d231-4260-bae2-6d5926d9da67" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/pages/Feed/Feed.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Feed/Feed.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/pages/Feed/SinglePost/SinglePost.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/pages/Feed/SinglePost/SinglePost.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,7 +46,8 @@
       <option name="presentableId" value="Default" />
       <updated>1646529872444</updated>
       <workItem from="1646529876912" duration="31000" />
-      <workItem from="1646568354301" duration="3438000" />
+      <workItem from="1646568354301" duration="3463000" />
+      <workItem from="1646818495753" duration="5786000" />
     </task>
     <servers />
   </component>
