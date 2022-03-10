@@ -127,6 +127,9 @@ class Feed extends Component {
 
     fetch(url, {
       method: method,
+      headers: {
+        'Authorization': 'Bearer ' + this.props.token,
+      },
       body: formData
     })
       .then(res => {
