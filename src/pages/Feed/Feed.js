@@ -52,7 +52,11 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('http://localhost:8080/feeds/posts?page=' + page + '&perPage=' + perPage)
+    fetch('http://localhost:8080/feeds/posts?page=' + page + '&perPage=' + perPage, {
+      headers: {
+        'Authorization': 'Bearer ' + this.props.token,
+      },
+    })
       .then(res => {
         if (res.status !== 200) {
           throw new Error('Failed to fetch posts.');
