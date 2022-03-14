@@ -202,7 +202,7 @@ class Feed extends Component {
               p => p._id === prevState.editPost._id
             );
             updatedPosts[postIndex] = post;
-          } 
+          }
           return {
             posts: updatedPosts,
             isEditing: false,
