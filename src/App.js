@@ -81,6 +81,14 @@ class App extends Component {
       })
       .then(resData => {
         console.log(resData);
+        if (resData.errors && resData.errors[0].status === 422) {
+          throw new Error(
+              "Validation Failed. Make sure the email address isn't used yet"
+          )
+        }
+        if (resData.errors) {
+          throw new Error("User creation failed!");
+        }
         this.setState({
           isAuth: true,
           token: resData.token,
@@ -129,7 +137,7 @@ class App extends Component {
       })
       .then(resData => {
         console.log(resData);
-        if (resData.errors && resData.errors[0].status == 422) {
+        if (resData.errors && resData.errors[0].status === 422) {
           throw new Error(
               "Validation Failed. Make sure the email address isn't used yet"
           )
