@@ -80,20 +80,19 @@ class App extends Component {
         return res.json();
       })
       .then(resData => {
-        console.log(resData);
         if (resData.errors && resData.errors[0].status === 422) {
           throw new Error(
               "Validation Failed. Make sure the email address isn't used yet"
           )
         }
         if (resData.errors) {
-          throw new Error("User creation failed!");
+          throw new Error("User Login failed!");
         }
         this.setState({
           isAuth: true,
-          token: resData.token,
+          token: resData.data.logIn.token,
           authLoading: false,
-          userId: resData.userId
+          userId: resData.data.logIn.userId
         });
         localStorage.setItem('token', resData.token);
         localStorage.setItem('userId', resData.userId);
