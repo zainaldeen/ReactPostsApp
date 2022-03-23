@@ -54,10 +54,21 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-    fetch('http://localhost:8080/feeds/posts?page=' + page + '&perPage=' + perPage, {
+
+    const graphqlQuery = `
+      {
+        posts{
+          posts
+          totalItems
+        }
+      }
+    `
+    fetch('http://localhost:8080/graphql', {
       headers: {
         'Authorization': 'Bearer ' + this.props.token,
+        'Content-Type': 'application/json'
       },
+      body: JSON.stringify()
     })
       .then(res => {
         if (res.status !== 200) {
@@ -119,34 +130,53 @@ class Feed extends Component {
     formData.append('content', postData.content);
     formData.append('image', postData.image);
 
-
-    let url = 'http://localhost:8080/feeds/post';
-    let method = 'POST';
-    if (this.state.editPost) {
-      method = 'PUT';
-      url = 'http://localhost:8080/feeds/post/'+ this.state.editPost._id;
+    const graphqlQuery = {
+      query: `
+       mutation {
+            createPost(postInput:{title: "${postData.title}", content:"${postData.content}", imageURL:"test test"}){
+            _id
+            title
+            content
+            creator {
+              name
+            }
+            createdAt
+            updatedAt
+          }
+        
+        }
+      `
     }
-
+    let url = 'http://localhost:8080/graphql';
+    let method = 'POST';
     fetch(url, {
       method: method,
       headers: {
         'Authorization': 'Bearer ' + this.props.token,
+        'Content-Type': 'application/json'
       },
-      body: formData
+      body: JSON.stringify(graphqlQuery)
     })
       .then(res => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error('Creating or editing a post failed!');
-        }
+        console.log(res);
         return res.json();
       })
       .then(resData => {
+        console.log(resData);
+        if (resData.errors && resData.errors[0].status === 422) {
+          throw new Error(
+              "Validation Failed. Make sure the email address isn't used yet"
+          )
+        }
+        if (resData.errors) {
+          throw new Error("User creation failed!");
+        }
         const post = {
-          _id: resData.post._id,
-          title: resData.post.title,
-          content: resData.post.content,
-          creator: resData.post.creator,
-          createdAt: resData.post.createdAt
+          _id: resData.data.createPost._id,
+          title: resData.data.createPost.title,
+          content: resData.data.createPost.content,
+          creator: resData.data.createPost.creator,
+          createdAt: resData.data.createPost.createdAt
         };
         this.setState(prevState => {
           let updatedPosts = [...prevState.posts];
