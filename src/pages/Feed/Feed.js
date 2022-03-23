@@ -54,19 +54,11 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
-/*
-
-        {
-          logIn(loginData: {email:"${authData.email}", password:"${authData.password}"}){
-            token
-            userId
-          }
-        }
- */
+    // console.log(typeof page, perPage);
     const graphqlQuery =
         {
           query: `{
-            getPosts{
+            getPosts(pagination: {page: ${page}, perPage:${perPage}}){
               posts {
                 _id
                 title
