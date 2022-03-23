@@ -54,32 +54,54 @@ class Feed extends Component {
       page--;
       this.setState({ postPage: page });
     }
+/*
 
-    const graphqlQuery = `
-      {
-        posts{
-          posts
-          totalItems
+        {
+          logIn(loginData: {email:"${authData.email}", password:"${authData.password}"}){
+            token
+            userId
+          }
         }
-      }
-    `
+ */
+    const graphqlQuery =
+        {
+          query: `{
+            getPosts{
+              posts {
+                _id
+                title
+                content
+                creator {
+                  _id
+                  name
+                  email
+                }
+                imageURL
+                createdAt
+              }
+              totalItems
+            }
+          }`
+        }
     fetch('http://localhost:8080/graphql', {
+      method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + this.props.token,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify()
+      body: JSON.stringify(graphqlQuery)
     })
       .then(res => {
-        if (res.status !== 200) {
-          throw new Error('Failed to fetch posts.');
-        }
         return res.json();
       })
       .then(resData => {
+        console.log(resData);
+        if (resData.errors) {
+          throw new Error("Post Fetching failed!");
+        }
         this.setState({
-          posts: resData.posts,
-          totalPosts: resData.totalItems,
+          posts: resData.data.getPosts.posts,
+          totalPosts: resData.data.getPosts.totalItems,
           postsLoading: false
         });
       })
