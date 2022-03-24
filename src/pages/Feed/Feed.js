@@ -124,13 +124,13 @@ class Feed extends Component {
     event.preventDefault();
 
     let graphqlQuery = {
-      query: `{
+      query: `     
         mutation{
-          updateUser({}){
+          updateUser(status: "${this.state.status}"){
             status
           }
         }
-      }`
+      `
     }
     fetch('http://localhost:8080/graphql', {
       method: 'POST',
@@ -141,13 +141,14 @@ class Feed extends Component {
       body: JSON.stringify(graphqlQuery)
     })
       .then(res => {
-        if (res.status !== 200 && res.status !== 201) {
-          throw new Error("Can't update status!");
-        }
         return res.json();
       })
       .then(resData => {
-        console.log(resData);
+        if (resData.errors) {
+          throw new Error("Status Updating failed!");
+        }
+        this.setState({ status: resData.data.updateUser.status });
+
       })
       .catch(this.catchError);
   };
