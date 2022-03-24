@@ -162,7 +162,7 @@ class Feed extends Component {
         .then(res => res.json())
         .then(fileResData => {
           const imageUrl = fileResData.filePath;
-          const graphqlQuery = {
+          let graphqlQuery = {
             query: `
        mutation {
             createPost(postInput:{title: "${postData.title}", content:"${postData.content}", imageURL:"${imageUrl}"}){
@@ -179,6 +179,30 @@ class Feed extends Component {
         }
       `
           }
+
+
+          if (this.state.editPost) {
+            graphqlQuery = {
+              query: `             
+                  mutation{
+                    updatePost(postId: "${this.state.editPost._id}", postData:{title: "${postData.title}", content:"${postData.content}", imageURL: "${imageUrl}"}){
+                      _id
+                      title
+                      content
+                      imageURL
+                      createdAt
+                      updatedAt
+                      creator {
+                        _id
+                        name
+                      }
+                    }
+                  }
+            `
+            }
+          }
+
+          console.log(graphqlQuery);
           let url = 'http://localhost:8080/graphql';
           let method = 'POST';
           fetch(url, {
@@ -203,12 +227,17 @@ class Feed extends Component {
                 if (resData.errors) {
                   throw new Error("User creation failed!");
                 }
+
+                let fetchedData = "createPost";
+                if (this.state.editPost) {
+                  fetchedData = "updatePost";
+                }
                 const post = {
-                  _id: resData.data.createPost._id,
-                  title: resData.data.createPost.title,
-                  content: resData.data.createPost.content,
-                  creator: resData.data.createPost.creator,
-                  createdAt: resData.data.createPost.createdAt
+                  _id: resData.data[fetchedData]._id,
+                  title: resData.data[fetchedData].title,
+                  content: resData.data[fetchedData].content,
+                  creator: resData.data[fetchedData].creator,
+                  createdAt: resData.data[fetchedData].createdAt
                 };
                 this.setState(prevState => {
                   let updatedPosts = [...prevState.posts];
